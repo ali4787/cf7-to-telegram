@@ -1,30 +1,21 @@
-<?php
-header('Content-Type: application/json');
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ message: 'Only POST requests allowed' });
+  }
 
-$data = json_decode(file_get_contents('php://input'), true);
-
-if (!$data) {
-    echo json_encode(['status' => 'no data received']);
-    exit;
-}
-
-$message = "📩 فرم جدید:\n";
-
-foreach ($data as $key => $value) {
-    $message .= "🔹 *" . ucfirst($key) . "*: " . $value . "\n";
-}
+  const data = req.body;
 
     // تنظیمات ربات
     $token = "7759452439:AAEKknswbGYyGWabiVWWQQc5R5U0Zl-BZRU";
     $chat_id = "109004266";
+  const message = `📩 فرم جدید:\n${JSON.stringify(data, null, 2)}`;
 
-$send_url = "https://api.telegram.org/bot$bot_token/sendMessage";
-$params = [
-    'chat_id' => $chat_id,
-    'text' => $message,
-    'parse_mode' => 'Markdown'
-];
+  const telegramRes = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id, text: message }),
+  });
 
-$response = file_get_contents($send_url . '?' . http_build_query($params));
-
-echo json_encode(['status' => 'done', 'telegram_response' => $response]);
+  const result = await telegramRes.json();
+  res.status(200).json({ status: 'done', telegram_response: result });
+}
