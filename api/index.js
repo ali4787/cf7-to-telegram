@@ -7,7 +7,7 @@ export default async function handler(req, res) {
 
   // تنظیمات ربات
   const token = "7759452439:AAEKknswbGYyGWabiVWWQQc5R5U0Zl-BZRU";
-  const chat_ids = ["109004266", "123456789"]; // 👈 آیدی چند ادمین
+  const chat_ids = ["109004266", "91373720"]; // 👈 آیدی چند ادمین
 
   const message = `📩 فرم انتخاب رایحه سایت:\n${JSON.stringify(data, null, 2)}`;
 
