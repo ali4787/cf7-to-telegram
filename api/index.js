@@ -7,21 +7,25 @@ export default async function handler(req, res) {
 
   // تنظیمات ربات
   const token = "7759452439:AAEKknswbGYyGWabiVWWQQc5R5U0Zl-BZRU";
-  const chat_id = "109004266";
+  const chat_ids = ["109004266", "123456789"]; // 👈 آیدی چند ادمین
 
-  const message = `📩 فرم جدید:\n${JSON.stringify(data, null, 2)}`;
+  const message = `📩 فرم انتخاب رایحه سایت:\n${JSON.stringify(data, null, 2)}`;
 
   try {
-    const telegramRes = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id, text: message }),
-    });
+    const sendToAll = await Promise.all(
+      chat_ids.map(chat_id =>
+        fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id, text: message }),
+        }).then(res => res.json())
+      )
+    );
 
-    const result = await telegramRes.json();
-    res.status(200).json({ status: 'done', telegram_response: result });
+    res.status(200).json({ status: 'done', telegram_responses: sendToAll });
   } catch (err) {
     res.status(500).json({ status: 'error', error: err.message });
   }
 }
+
 
